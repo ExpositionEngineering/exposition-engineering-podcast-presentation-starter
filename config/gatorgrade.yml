@@ -1,0 +1,75 @@
+setup: |
+  echo "🐊 Attempt to install exposition engineering tools"
+  echo "🐊 Using pipx to perform program installation"
+  echo "🐊 Will not re-install if already installed"
+  pipx install pymarkdownlnt
+---
+
+# Checks on Files {{{
+
+# perform checks on a file
+- writing/presentation.md:
+    - description: Ensure that the presentation.md file exists in the writing/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for the presentation
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Delete the 'Add Your Name Here' prompt in the presentation file
+      check: MatchFileFragment
+      options:
+        fragment: "Add Your Name Here"
+        count: 0
+        exact: true
+    - description: Retype the every word in the Honor Code pledge in presentation.md
+      check: MatchFileFragment
+      options:
+        fragment: "I adhered to the Allegheny College Honor Code while completing this project."
+        count: 2
+        exact: true
+    - description: Confirm that the markdown file containing the presentation details has the correct number of headers
+      check: CountMarkdownTags
+      options:
+        tag: heading
+        count: 5
+        exact: false
+    - description: Confirm that the markdown file containing the presentation details has the correct number of lists
+      check: CountMarkdownTags
+      options:
+        tag: list
+        count: 2
+        exact: true
+    - description: Confirm that the markdown file containing the presentation details has the correct number of links
+      check: CountMarkdownTags
+      options:
+        tag: link
+        count: 1
+        exact: false
+    - description: Confirm that the markdown file containing the presentation details has the Google Slides link
+      check: MatchFileFragment
+      options:
+        fragment: "Link to the Google Slides"
+        count: 2
+        exact: false
+
+# }}}
+
+# Check Output from Linters {{{
+
+# run a check
+- description: Confirm that the presentation file passes the linting checks run by pymarkdownlnt
+  command: "pymarkdown --config .pymarkdown.cfg scan writing/presentation.md"
+
+# }}}
+
+# Commits {{{
+
+# count number of commits in the GitHub repository
+- description: Have at least a specific minimum of commits in repository
+  check: CountCommits
+  options:
+    count: 5
+
+# }}}
